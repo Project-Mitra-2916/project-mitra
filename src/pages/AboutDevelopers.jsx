@@ -7,18 +7,18 @@ const developers = [
   {
     name: "Gaurang Gupta",
     role: "Frontend & UX",
-    email: "guptatech29@gmail.com",
+    email: "gauranggupta576@gmail.com",
     linkedin: "https://www.linkedin.com/in/gaurang-gupta-131689275",
     avatar: male_2, // <--- Use the imported variable
-    bio: "Designed the homepage, login, card layouts, and implemented dark mode to deliver a smooth and interactive user experience. Passionate about building practical student-focused platforms with modern tools like React, Tailwind CSS, Figma, and Firebase.",
+    bio: "Designed and developed core pages including Homepage, Admin Dashboard, Privacy Policy, Terms & Conditions, and the Code Generator tool. Implemented responsive layouts and ensured pixel-perfect UI using React and Tailwind CSS. Also handled Firebase API configuration and overall structural planning. Focused on building modern, student-friendly interfaces using Figma, React, Tailwind CSS, and Firebase.",
   },
   {
     name: "Vedanshi Gupta",
     role: "Firebase Integration & Deployment",
-    email: "collab@email.com",
-    linkedin: "https://www.linkedin.com/in/vedanshigupta/",
+    email: "vedanshigupta89@gmail.com",
+    linkedin: "http://www.linkedin.com/in/vedanshi-gupta16",
     avatar: female, // <--- Use the imported variable
-    bio: "Worked on Firebase integration, authentication, Firestore, and project submission flow to ensure smooth and reliable backend performance. Believes in helping students find valuable projects with a clean and aesthetic UI. Skilled in Firebase, Tailwind CSS, React, and Figma.",
+    bio: "Engineered core backend functionalities including Firebase Authentication, Firestore integration, and secure form submissions. Developed key dynamic pages like Login, Register, and Submit Project with full validation and protected routing. Built the AI-powered Chatbot interface and ensured seamless user interaction with real-time data sync. Skilled in building scalable flows using Firebase, React, Tailwind CSS, and Figma to deliver a smooth and secure user experience.",
   },
 ];
 
