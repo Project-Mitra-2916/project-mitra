@@ -6,7 +6,7 @@ import female from "../assets/female.jpg";
 const developers = [
   {
     name: "Gaurang Gupta",
-    role: "Frontend & UX",
+    role: "Frontend & Firebase Co-Developer",
     email: "gauranggupta576@gmail.com",
     linkedin: "https://www.linkedin.com/in/gaurang-gupta-131689275",
     avatar: male_2, // <--- Use the imported variable
@@ -14,7 +14,7 @@ const developers = [
   },
   {
     name: "Vedanshi Gupta",
-    role: "Firebase Integration & Deployment",
+    role: "Frontend & Firebase Co-Developer",
     email: "vedanshigupta89@gmail.com",
     linkedin: "http://www.linkedin.com/in/vedanshi-gupta16",
     avatar: female, // <--- Use the imported variable
