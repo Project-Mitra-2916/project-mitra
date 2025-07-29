@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.input {
+  @apply w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400;
+}
+
+/* 👇 Typewriter cursor animation */
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typewriter-cursor::after {
+  content: '|';
+  animation: blinkCursor 1s infinite;
+  font-weight: 400;
+  color: #000000; /* Tailwind's gray-600 */
+}
+
+/* For light theme toast
+.Toastify__toast {
+  border-radius: 10px;
+  font-size: 0.9rem;
+  padding: 14px 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.Toastify__toast--success {
+  background: #e6fffa;
+  color: #047857;
+}
+
+.Toastify__toast--error {
+  background: #fff1f2;
+  color: #b91c1c;
+} */
+
+/* For dark theme toast */
+.Toastify__toast {
+  border-radius: 10px;
+  font-size: 0.9rem;
+  padding: 14px 18px;
+  background: #1f2937; /* Slate-800 */
+  color: #f3f4f6;       /* Gray-100 */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.Toastify__close-button {
+  color: #9ca3af; /* Gray-400 */
+}
+
+.Toastify__toast--success {
+  border-left: 5px solid #10b981; /* Emerald-500 */
+}
+
+.Toastify__toast--error {
+  border-left: 5px solid #ef4444; /* Red-500 */
+}
+
+.Toastify__toast-icon {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+}
+
+html,
+body {
+  background-color: white;
+  color: #1f2937; /* gray-800 */
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.dark html,
+.dark body {
+  background-color: #111827; /* gray-900 */
+  color: #f3f4f6; /* gray-100 */
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
