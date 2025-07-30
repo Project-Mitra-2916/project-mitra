@@ -8,12 +8,17 @@ const models = [
   "openai/gpt-3.5-turbo",
 ];
 
-export async function getChatbotResponse(prompt, apiKey) {
+// Allowed frontend origins
+const allowedReferers = [
+  "http://localhost:3000",
+  "https://projectmitra-2916.web.app",
+];
+
+export async function getChatbotResponse(prompt, apiKey, origin = "http://localhost:3000") {
   if (!apiKey) {
     throw new Error("API key is missing.");
   }
 
-  // Augment prompt with instructions for clean and structured response
   const enhancedPrompt = `${prompt}
 
 Please respond as a friendly chatbot assistant speaking casual English.
@@ -27,6 +32,8 @@ If you can, respond with JSON in this format when you provide ideas:
 
 Otherwise, just reply normally in plain text.`;
 
+  const referer = allowedReferers.includes(origin) ? origin : allowedReferers[1];
+
   for (let model of models) {
     try {
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -34,7 +41,7 @@ Otherwise, just reply normally in plain text.`;
         headers: {
           "Authorization": `Bearer ${apiKey}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "http://localhost:3000",
+          "HTTP-Referer": referer,
           "X-Title": "ProjectMitra Chatbot",
         },
         body: JSON.stringify({
@@ -57,14 +64,13 @@ Otherwise, just reply normally in plain text.`;
       const reply = data?.choices?.[0]?.message?.content;
 
       if (reply) {
-        // Try parsing JSON response for 'ideas'
         try {
           const parsed = JSON.parse(reply);
           if (parsed.ideas && Array.isArray(parsed.ideas)) {
             return { ideas: parsed.ideas.slice(0, 5), model };
           }
         } catch {
-          // Not JSON — return raw reply for frontend to show
+          // Not JSON — return raw reply
         }
 
         return { reply, model };

@@ -10,6 +10,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
+const allowedReferers = [
+  "http://localhost:3000",
+  "https://projectmitra-2916.web.app"
+];
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -29,6 +34,11 @@ app.post("/generate", async (req, res) => {
     "openai/gpt-3.5-turbo",
   ];
 
+  // Determine valid Referer
+  const referer = allowedReferers.includes(req.headers.origin)
+    ? req.headers.origin
+    : allowedReferers[1]; // fallback to production
+
   for (let model of models) {
     try {
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -36,7 +46,7 @@ app.post("/generate", async (req, res) => {
         headers: {
           "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "http://localhost:3000",
+          "HTTP-Referer": referer,
           "X-Title": "ProjectMitra Code Generator"
         },
         body: JSON.stringify({
@@ -59,7 +69,6 @@ app.post("/generate", async (req, res) => {
       const reply = data?.choices?.[0]?.message?.content;
 
       if (reply) {
-        // Extract code block between triple backticks
         const codeBlockRegex = /```(?:[\s\S]*?\n)?([\s\S]*?)```/;
         const codeMatch = reply.match(codeBlockRegex);
 
@@ -80,12 +89,11 @@ app.post("/generate", async (req, res) => {
   return res.status(500).json({ error: "All models failed. Please try again later." });
 });
 
-// Chatbot Route -
 app.post("/chatbot", async (req, res) => {
   const { message } = req.body;
   if (!message) return res.status(400).json({ error: "Message required" });
 
-  const response = await getChatbotResponse(message, OPENROUTER_API_KEY);
+  const response = await getChatbotResponse(message, OPENROUTER_API_KEY, req.headers.origin);
   if (response.error) {
     return res.status(500).json({ error: response.error });
   }
