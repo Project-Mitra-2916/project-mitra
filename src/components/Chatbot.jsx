@@ -228,7 +228,7 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="fixed bottom-3 right-3 z-50 font-sans w-full max-w-[400px] sm:right-6 sm:bottom-5 sm:max-w-md">
+    <div className="fixed bottom-5 right-6 z-50 font-sans">
       {/* Toggle Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -241,10 +241,14 @@ export default function Chatbot() {
 
       {/* Chatbox */}
       <div
-        className={`transition-all duration-300 ${isOpen ? "scale-100 opacity-100 pointer-events-auto" : "scale-95 opacity-0 pointer-events-none"} origin-bottom-right`}
+        className={`transition-all duration-300 ${
+          isOpen
+            ? "scale-100 opacity-100 pointer-events-auto"
+            : "scale-95 opacity-0 pointer-events-none"
+        } origin-bottom-right`}
       >
         {isOpen && (
-          <div className="relative w-full max-w-[95vw] sm:max-w-md mt-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl flex flex-col h-[70vh] sm:h-[32rem]">
+          <div className="relative w-96 max-w-[90vw] sm:w-96 mt-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl flex flex-col h-[70vh] sm:h-[32rem]">
             <div className="flex items-center justify-between px-4 py-3 border-b dark:border-gray-700 bg-gradient-to-r from-indigo-600 to-sky-600 rounded-t-xl">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">🤖</span>
@@ -255,7 +259,7 @@ export default function Chatbot() {
                 className="text-white opacity-80 hover:opacity-100 text-xl px-2 focus:outline-none"
                 aria-label="Close chat"
               >
-                {/* You can add an "X" or icon here if you want */}
+                {/* X icon or close can be added here */}
               </button>
             </div>
 
