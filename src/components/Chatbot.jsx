@@ -53,7 +53,6 @@ function shuffleArray(array) {
 
 const generateProjectLink = (docId) => `/projects/${docId}`;
 
-
 export default function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -76,73 +75,72 @@ export default function Chatbot() {
 
   // Main Firestore search with combined year & tag filtering + debug logs
   const findProjectsInFirestore = async (userQuery) => {
-  const yearFilter = extractYearFromQuery(userQuery);    // e.g. "2"
-  const tagsInQuery = extractTagsFromQuery(userQuery);   // e.g. ["chemistry","python"]
-  const queryWordsRaw = userQuery.toLowerCase().split(/\s+/).map(s => s.trim()).filter(Boolean);
-  const genericWords = ["project", "projects", "idea", "ideas", "mini", "give", "me", "some", "for", "in", "the", "my", "guide", "tutorial"];
-  const queryWords = queryWordsRaw.filter(qw => !genericWords.includes(qw));
-  
-  let projectsQuery = collection(db, "projects");
-  const snapshot = await getDocs(projectsQuery);
-  const matches = [];
-  
-  snapshot.forEach(docSnap => {
-    const proj = docSnap.data();
-    const docId = docSnap.id;
-  
-    const projYear = (proj.year || "").toLowerCase();
-    let tagsArray = [];
-    if (Array.isArray(proj.tags)) {
-      tagsArray = proj.tags.map(t => normalizeString(t));
-    } else if (typeof proj.tags === "string") {
-      tagsArray = proj.tags.split(/[, ]+/).map(t => normalizeString(t));
-    }
-    const title = normalizeString(proj.title || "");
-    const combinedTagsTitle = [...tagsArray, title];
+    const yearFilter = extractYearFromQuery(userQuery);    // e.g. "2"
+    const tagsInQuery = extractTagsFromQuery(userQuery);    // e.g. ["chemistry","python"]
+    const queryWordsRaw = userQuery.toLowerCase().split(/\s+/).map(s => s.trim()).filter(Boolean);
+    const genericWords = ["project", "projects", "idea", "ideas", "mini", "give", "me", "some", "for", "in", "the", "my", "guide", "tutorial"];
+    const queryWords = queryWordsRaw.filter(qw => !genericWords.includes(qw));
 
-    // 1. Year + tags in query: must match both
-    if (yearFilter && tagsInQuery.length > 0) {
-      if (!projYear.includes(yearFilter)) return;
-      const tagMatch = tagsInQuery.some(qTag =>
-        tagsArray.some(projTag => projTag.includes(qTag) || qTag.includes(projTag)) ||
-        title.includes(qTag)
-      );
-      if (!tagMatch) return;
-    }
-    // 2. Only year present: match year only (don’t do further title/tag match)
-    else if (yearFilter && tagsInQuery.length === 0) {
-      if (!projYear.includes(yearFilter)) return;
-    }
-    // 3. Only tags present: match tags only (no year filter)
-    else if (!yearFilter && tagsInQuery.length > 0) {
-      const tagMatch = tagsInQuery.some(qTag => 
-        tagsArray.some(projTag => projTag.includes(qTag) || qTag.includes(projTag)) ||
-        title.includes(qTag)
-      );
-      if (!tagMatch) return;
-    }
-    // 4. No direct filter: use fuzzy queryWords as a fallback (very broad)
-    else if (!yearFilter && !tagsInQuery.length && queryWords.length > 0) {
-      const relevantMatch = queryWords.some(qw =>
-        combinedTagsTitle.some(item => item.includes(qw) || qw.includes(item))
-      );
-      if (!relevantMatch) return;
-    }
-    // If user input has no context at all, skip
-    else {
-      return;
-    }
-    // All filters passed, add project!
-    matches.push({
-      title: proj.title || "Untitled Project",
-      link: generateProjectLink(docId),
+    let projectsQuery = collection(db, "projects");
+    const snapshot = await getDocs(projectsQuery);
+    const matches = [];
+
+    snapshot.forEach(docSnap => {
+      const proj = docSnap.data();
+      const docId = docSnap.id;
+
+      const projYear = (proj.year || "").toLowerCase();
+      let tagsArray = [];
+      if (Array.isArray(proj.tags)) {
+        tagsArray = proj.tags.map(t => normalizeString(t));
+      } else if (typeof proj.tags === "string") {
+        tagsArray = proj.tags.split(/[, ]+/).map(t => normalizeString(t));
+      }
+      const title = normalizeString(proj.title || "");
+      const combinedTagsTitle = [...tagsArray, title];
+
+      // 1. Year + tags in query: must match both
+      if (yearFilter && tagsInQuery.length > 0) {
+        if (!projYear.includes(yearFilter)) return;
+        const tagMatch = tagsInQuery.some(qTag =>
+          tagsArray.some(projTag => projTag.includes(qTag) || qTag.includes(projTag)) ||
+          title.includes(qTag)
+        );
+        if (!tagMatch) return;
+      }
+      // 2. Only year present: match year only (don’t do further title/tag match)
+      else if (yearFilter && tagsInQuery.length === 0) {
+        if (!projYear.includes(yearFilter)) return;
+      }
+      // 3. Only tags present: match tags only (no year filter)
+      else if (!yearFilter && tagsInQuery.length > 0) {
+        const tagMatch = tagsInQuery.some(qTag => 
+          tagsArray.some(projTag => projTag.includes(qTag) || qTag.includes(projTag)) ||
+          title.includes(qTag)
+        );
+        if (!tagMatch) return;
+      }
+      // 4. No direct filter: use fuzzy queryWords as a fallback (very broad)
+      else if (!yearFilter && !tagsInQuery.length && queryWords.length > 0) {
+        const relevantMatch = queryWords.some(qw =>
+          combinedTagsTitle.some(item => item.includes(qw) || qw.includes(item))
+        );
+        if (!relevantMatch) return;
+      }
+      // If user input has no context at all, skip
+      else {
+        return;
+      }
+      // All filters passed, add project!
+      matches.push({
+        title: proj.title || "Untitled Project",
+        link: generateProjectLink(docId),
+      });
     });
-  });
-  
-  console.log(`[Debug]: Total matched projects found: ${matches.length}`);
-  return shuffleArray(matches).slice(0, 5);
-};
 
+    console.log(`[Debug]: Total matched projects found: ${matches.length}`);
+    return shuffleArray(matches).slice(0, 5);
+  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -230,7 +228,7 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="fixed bottom-5 right-6 z-50 font-sans">
+    <div className="fixed bottom-3 right-3 z-50 font-sans w-full max-w-[400px] sm:right-6 sm:bottom-5 sm:max-w-md">
       {/* Toggle Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -243,11 +241,10 @@ export default function Chatbot() {
 
       {/* Chatbox */}
       <div
-        className={`transition-all duration-300 ${isOpen ? "scale-100 opacity-100 pointer-events-auto" : "scale-95 opacity-0 pointer-events-none"
-          } origin-bottom-right`}
+        className={`transition-all duration-300 ${isOpen ? "scale-100 opacity-100 pointer-events-auto" : "scale-95 opacity-0 pointer-events-none"} origin-bottom-right`}
       >
         {isOpen && (
-          <div className="relative w-96 max-w-full mt-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl flex flex-col h-[32rem]">
+          <div className="relative w-full max-w-[95vw] sm:max-w-md mt-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl flex flex-col h-[70vh] sm:h-[32rem]">
             <div className="flex items-center justify-between px-4 py-3 border-b dark:border-gray-700 bg-gradient-to-r from-indigo-600 to-sky-600 rounded-t-xl">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">🤖</span>
@@ -258,6 +255,7 @@ export default function Chatbot() {
                 className="text-white opacity-80 hover:opacity-100 text-xl px-2 focus:outline-none"
                 aria-label="Close chat"
               >
+                {/* You can add an "X" or icon here if you want */}
               </button>
             </div>
 
